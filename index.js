@@ -27,7 +27,7 @@ const getData = (pageNO = 1) => {
       created_at_max: new Date(Date.now() - 30*60*1000).getTime() / 1000,
       marketcap_max: 20000,
       tx_24h_count_min: 100,
-      volume_u_24h_max: 10000,
+      volume_u_24h_min: 20000,
       pageNO,
       pageSize: 100,
       category: "pump_in_new"
@@ -44,7 +44,7 @@ const getOutData = (pageNO = 1) => {
       created_at_min: new Date(Date.now() - 48*60*60*1000).getTime() / 1000,
       marketcap_max: 20000,
       tx_24h_count_min: 100,
-      volume_u_24h_max: 10000,
+      volume_u_24h_min: 20000,
       pageNO,
       pageSize: 100,
       category: "pump_out_new"
