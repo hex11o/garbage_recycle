@@ -28,6 +28,7 @@ const getData = (pageNO = 1) => {
       marketcap_max: 20000,
       tx_24h_count_min: 100,
       volume_u_24h_min: 20000,
+      holders_top10_ratio_max: 50,
       pageNO,
       pageSize: 100,
       category: "pump_in_new"
@@ -45,6 +46,7 @@ const getOutData = (pageNO = 1) => {
       marketcap_max: 20000,
       tx_24h_count_min: 100,
       volume_u_24h_min: 20000,
+      holders_top10_ratio_max: 50,
       pageNO,
       pageSize: 100,
       category: "pump_out_new"
@@ -92,11 +94,10 @@ const getAllToken = async () => {
     sendedToken.set(target_token, created_at);
     // 发送消息
     sendMessageToChannel(normalizeMessage(token), token)
-    await sleep(5000);
+    const mapObj = Object.fromEntries(sendedToken);
+    fs.writeFileSync(filePath, JSON.stringify(mapObj, null, 2), 'utf-8');
+    await sleep(3000);
   }
-
-  const mapObj = Object.fromEntries(sendedToken);
-  fs.writeFileSync(filePath, JSON.stringify(mapObj, null, 2), 'utf-8');
 }
 
 // 将信息处理为发送text
