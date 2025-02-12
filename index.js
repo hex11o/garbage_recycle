@@ -170,17 +170,17 @@ const clearStorage = () => {
   })
 }
 
-// 每隔半小时发送一次
+// 每两小时发送一次
 const run = () => {
   setInterval(() => {
     getAllToken()
-  }, 900000)
+  }, 2*60*60*1000)
 }
 
 const clearData = () => {
   setInterval(() => {
     clearStorage()
-  }, 86400000)
+  }, 24*60*60*1000)
 }
 
 getAllToken();
