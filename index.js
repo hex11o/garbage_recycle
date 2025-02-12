@@ -25,22 +25,26 @@ const getData = (pageNO = 1) => {
     params: {
       created_at_min: new Date(Date.now() - 48*60*60*1000).getTime() / 1000,
       created_at_max: new Date(Date.now() - 30*60*1000).getTime() / 1000,
-      dev_balance_ratio_cur_min: 1,
       marketcap_max: 20000,
+      tx_24h_count_min: 100,
+      volume_u_24h_max: 10000,
       pageNO,
       pageSize: 100,
       category: "pump_in_new"
     }
   }).then((s) => s.data.data)
 }
+// const data = await getData()
+// console.log(data.total);
 
 // raydium外盘
 const getOutData = (pageNO = 1) => {
   return _axios.get("/v1api/v4/tokens/treasure/list", {
     params: {
       created_at_min: new Date(Date.now() - 48*60*60*1000).getTime() / 1000,
-      dev_balance_ratio_cur_min: 1,
       marketcap_max: 20000,
+      tx_24h_count_min: 100,
+      volume_u_24h_max: 10000,
       pageNO,
       pageSize: 100,
       category: "pump_out_new"
@@ -52,6 +56,10 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function filter({ appendix, total }) {
+  return appendix.includes("twitter") && appendix.includes("website") && total == 1
+}
+
 // 获取所有数据，需要有推特链接
 const getAllToken = async () => {
   const allData = []
@@ -61,25 +69,24 @@ const getAllToken = async () => {
   const pumpPage = Math.ceil(pumpData.total / 100)
   const raydiumPage = Math.ceil(raydiumData.total / 100)
 
-  const firstPageData = [...pumpData.data, ...raydiumData.data].filter(({ appendix }) => appendix.includes("twitter") && appendix.includes("website"))
+  const firstPageData = [...pumpData.data, ...raydiumData.data].filter(filter)
   allData.push(...firstPageData)
 
   if (pumpPage > 1) {
     for (let i = 2; i <= pumpPage; i++) {
-      const data = (await getData(i)).data.filter(({ appendix }) => appendix.includes("twitter"))
+      const data = (await getData(i)).data.filter(filter)
       allData.push(...data)
     }
   }
 
   if (raydiumPage > 1) {
     for (let i = 2; i <= pumpPage; i++) {
-      const data = (await getData(i)).data.filter(({ appendix }) => appendix.includes("twitter"))
+      const data = (await getData(i)).data.filter(filter)
       allData.push(...data)
     }
   }
   const newToken = allData.filter(({ target_token }) => !sendedToken.has(target_token))
   if (!newToken.length) return;
-  sendMessageToChannel(`本轮共发送${newToken.length}个垃圾：`)
   for (let token of newToken) {
     const { target_token, created_at } = token;
     sendedToken.set(target_token, created_at);
@@ -131,11 +138,11 @@ const normalizeMessage = (message) => {
 ├ 市值：${(market_cap / 1000).toFixed(2)}k
 ├ 价格：${current_price_usd.toFixed(9)}
 ├ 持有人数：${holders}
-├ 24h_交易量：${volume_u_24h.toFixed(0)}
-└ 24h_交易人数：${makers_24h}
+├ 24h交易量：${volume_u_24h.toFixed(0)}
+├ 24h交易数：${tx_24h_count}
+└ 24h交易人数：${makers_24h}
 
 🧑‍💻开发者信息
-├ 开发者发币数量：${total}
 └ Top10占比：${holders_top10_ratio.toFixed(0)}%
 🔗${appendix.twitter ? `[推特✅](${appendix.twitter})` : "推特❌"} ${appendix.telegram ? `[电报✅](${appendix.telegram})` : "电报❌"} ${appendix.website ? `[网站✅](${appendix.website})` : "网站❌"}
 `
@@ -170,13 +177,14 @@ const clearStorage = () => {
   })
 }
 
-// 每两小时发送一次
+// 每十分钟查询一次
 const run = () => {
   setInterval(() => {
     getAllToken()
-  }, 2*60*60*1000)
+  }, 10*60*1000)
 }
 
+// 每天清理缓存
 const clearData = () => {
   setInterval(() => {
     clearStorage()
