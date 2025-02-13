@@ -60,7 +60,14 @@ function sleep(ms) {
 
 function filter({ appendix, total }) {
   let social = appendix ? JSON.parse(appendix) : {}
-  return appendix.includes("twitter") && appendix.includes("website") && total == 1 && !social.website.includes("twitter")
+  return appendix.includes("twitter")
+    && appendix.includes("website")
+    && total == 1
+    && !social.website.includes("twitter.com")
+    && !social.website.includes("youtube.com")
+    && !social.website.includes("x.com")
+    && !social.website.includes("wikipedia.org")
+    && !social.website.includes("instagram.com")
 }
 
 // 获取所有数据，需要有推特链接
