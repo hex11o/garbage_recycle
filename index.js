@@ -68,6 +68,8 @@ function filter({ appendix, total }) {
     && !social.website.includes("x.com")
     && !social.website.includes("wikipedia.org")
     && !social.website.includes("instagram.com")
+    && !social.website.includes("reddit.com")
+    && !social.website.includes("tiktok.com")
 }
 
 // 获取所有数据，需要有推特链接
