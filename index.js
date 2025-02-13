@@ -108,6 +108,7 @@ const normalizeMessage = (message) => {
     amm,
     target_token,
     token0_symbol,
+    token1_symbol,
     tx_24h_count,
     volume_u_24h,
     makers_24h,
@@ -134,7 +135,7 @@ const normalizeMessage = (message) => {
     timeText = `${Math.floor(timeDiff / 86400)}d${Math.floor((timeDiff % 86400) / 3600)}h`;
   }
 
-  return `[$${token0_symbol}]() （${amm}${amm === "pump" ? "内盘" : "外盘"}）
+  return `[$${token0_symbol != "SOL" ? token0_symbol : token1_symbol }]() （${amm}${amm === "pump" ? "内盘" : "外盘"}）
 \`${target_token}\`
 💹交易信息
 ├ 开盘时间：${timeText}
@@ -149,6 +150,9 @@ const normalizeMessage = (message) => {
 ├ 推特：[${appendix.twitter}](${appendix.twitter})
 ├ 网站：[${appendix.website}](${appendix.website})
 └ Top10占比：${holders_top10_ratio.toFixed(0)}%
+
+🟢GMGN查看
+[https://gmgn.ai/sol/token/${target_token}](https://gmgn.ai/sol/token/${target_token})
 `
 }
 
@@ -163,7 +167,7 @@ const sendMessageToChannel = (text, msg) => {
     },
     reply_markup: msg ? {
       inline_keyboard: [
-        [{ text: "GMGN查看", url: `https://gmgn.ai/sol/token/${msg.target_token}` }, { text: "推特搜索", url: `https://x.com/search?q=${msg.target_token}&src=typed_query` }, { text: "🐶购买", url: `tg://resolve?domain=Tars_Dogeebot&start=rt_17336587515857_${msg.target_token}` }],
+        [{ text: "推特搜索", url: `https://x.com/search?q=${msg.target_token}&src=typed_query` }, { text: "🐶购买", url: `tg://resolve?domain=Tars_Dogeebot&start=rt_17336587515857_${msg.target_token}` }],
       ]
     } : {}
   })
