@@ -59,7 +59,8 @@ function sleep(ms) {
 }
 
 function filter({ appendix, total }) {
-  return appendix.includes("twitter") && appendix.includes("website") && total == 1
+  let social = appendix ? JSON.parse(appendix) : {}
+  return appendix.includes("twitter") && appendix.includes("website") && total == 1 && !social.website.includes("twitter")
 }
 
 // 获取所有数据，需要有推特链接
@@ -89,6 +90,7 @@ const getAllToken = async () => {
   }
   const newToken = allData.filter(({ target_token }) => !sendedToken.has(target_token))
   if (!newToken.length) return;
+  console.log(new Date(), newToken.length);
   for (let token of newToken) {
     const { target_token, created_at } = token;
     sendedToken.set(target_token, created_at);
@@ -132,7 +134,7 @@ const normalizeMessage = (message) => {
     timeText = `${Math.floor(timeDiff / 86400)}d${Math.floor((timeDiff % 86400) / 3600)}h`;
   }
 
-  return `[$${token0_symbol}](https://solscan.io/token/${token0_symbol}) （${amm}${amm === "pump" ? "内盘" : "外盘"}）
+  return `[$${token0_symbol}]() （${amm}${amm === "pump" ? "内盘" : "外盘"}）
 \`${target_token}\`
 💹交易信息
 ├ 开盘时间：${timeText}
@@ -144,8 +146,9 @@ const normalizeMessage = (message) => {
 └ 24h交易人数：${makers_24h}
 
 🧑‍💻开发者信息
+├ 推特：[${appendix.twitter}](${appendix.twitter})
+├ 网站：[${appendix.website}](${appendix.website})
 └ Top10占比：${holders_top10_ratio.toFixed(0)}%
-🔗${appendix.twitter ? `[推特✅](${appendix.twitter})` : "推特❌"} ${appendix.telegram ? `[电报✅](${appendix.telegram})` : "电报❌"} ${appendix.website ? `[网站✅](${appendix.website})` : "网站❌"}
 `
 }
 
