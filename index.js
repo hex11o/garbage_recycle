@@ -93,6 +93,7 @@ const getAllToken = async () => {
   console.log(new Date(), newToken.length);
   for (let token of newToken) {
     const { target_token, created_at } = token;
+    if (sendedToken.has(target_token)) return; // buggy, 前面请求回来的可能重复，在这里过滤
     sendedToken.set(target_token, created_at);
     // 发送消息
     sendMessageToChannel(normalizeMessage(token), token)
