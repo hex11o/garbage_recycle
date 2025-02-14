@@ -61,7 +61,8 @@ function sleep(ms) {
 function filter({ appendix, total }) {
   let social = appendix ? JSON.parse(appendix) : {}
   return social.website && (social.website.includes("github.com") || (
-    total == 1
+    social.twitter
+    && total == 1
     && !social.website.includes("twitter.com")
     && !social.website.includes("youtube.com")
     && !social.website.includes("x.com")
