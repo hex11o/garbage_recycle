@@ -60,8 +60,8 @@ function sleep(ms) {
 
 function filter({ appendix, total }) {
   let social = appendix ? JSON.parse(appendix) : {}
-  return appendix.includes("website")
-    && total == 1
+  return social.website && (social.website.includes("github.com") || (
+    total == 1
     && !social.website.includes("twitter.com")
     && !social.website.includes("youtube.com")
     && !social.website.includes("x.com")
@@ -79,6 +79,7 @@ function filter({ appendix, total }) {
     && !social.website.includes("vercel.app")
     && !social.website.includes("t.me")
     && !social.website.includes("token")
+  ))
 }
 
 // 获取所有数据，需要有推特链接
