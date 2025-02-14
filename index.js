@@ -60,8 +60,7 @@ function sleep(ms) {
 
 function filter({ appendix, total }) {
   let social = appendix ? JSON.parse(appendix) : {}
-  return appendix.includes("twitter")
-    && appendix.includes("website")
+  return appendix.includes("website")
     && total == 1
     && !social.website.includes("twitter.com")
     && !social.website.includes("youtube.com")
@@ -167,7 +166,7 @@ const normalizeMessage = (message) => {
 └ 24h交易人数：${makers_24h}
 
 🧑‍💻开发者信息
-├ 推特：[${appendix.twitter}](${appendix.twitter})
+${appendix.twitter ? `├ 推特：[${appendix.twitter}](${appendix.twitter})` : ""}
 ├ 网站：[${appendix.website}](${appendix.website})
 └ Top10占比：${holders_top10_ratio.toFixed(0)}%
 
