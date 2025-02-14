@@ -70,6 +70,16 @@ function filter({ appendix, total }) {
     && !social.website.includes("instagram.com")
     && !social.website.includes("reddit.com")
     && !social.website.includes("tiktok.com")
+    && !social.website.includes("linktr.ee")
+    && !social.website.includes("kick.com")
+    && !social.website.includes("twitch.tv")
+    && !social.website.includes("coin")
+    && !social.website.includes("youtu.be")
+    && !social.website.includes(".top")
+    && !social.website.includes("meme")
+    && !social.website.includes("vercel.app")
+    && !social.website.includes("t.me")
+    && !social.website.includes("token")
 }
 
 // 获取所有数据，需要有推特链接
