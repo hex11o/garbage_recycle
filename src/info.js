@@ -155,7 +155,7 @@ const sendMessageToChannel = (text, msg) => {
 // 清理map
 const clearStorage = () => {
   sendedToken.forEach((value, key) => {
-    if (Math.floor((Date.now() - new Date(typeof value === "string" ? value.created_at : value)) / 1000) > 86400) {
+    if (Math.floor((Date.now() - new Date(typeof value === "string" ? value : value.created_at)) / 1000) > 86400) {
       sendedToken.delete(key)
     }
   })
