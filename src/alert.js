@@ -5,7 +5,7 @@ import { sleep } from "../helper.js";
 
 const API_TOKEN = process.env.API_TOKEN;
 const ALERT_CHAT_ID = process.env.ALERT_CHAT_ID;
-const threshold = 1
+const threshold = 10
 
 // 发送消息： 当前价格变化比例超过10%
 const getTokenCurrentInfo = (token) => {
