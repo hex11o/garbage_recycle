@@ -8,7 +8,13 @@ config();
 
 const API_TOKEN = process.env.API_TOKEN;
 const CHAT_ID = process.env.CHAT_ID;
-const filePath = '../cache.json';
+const filePath = './cache.json';
+const timeRange = 72*60*60*1000
+const marketcap_max= 20000
+const tx_24h_count_min = 100
+const volume_u_24h_min = 20000
+const holders_top10_ratio_max = 50
+const pageSize = 100
 
 // 缓存数据
 export let sendedToken = new Map()
@@ -24,14 +30,14 @@ if (fs.existsSync(filePath)) {
 const getData = (pageNO = 1) => {
   return _axios.get("/v1api/v4/tokens/treasure/list", {
     params: {
-      created_at_min: new Date(Date.now() - 48*60*60*1000).getTime() / 1000,
+      created_at_min: new Date(Date.now() - timeRange).getTime() / 1000,
       created_at_max: new Date(Date.now() - 30*60*1000).getTime() / 1000,
-      marketcap_max: 20000,
-      tx_24h_count_min: 100,
-      volume_u_24h_min: 20000,
-      holders_top10_ratio_max: 50,
+      marketcap_max,
+      tx_24h_count_min,
+      volume_u_24h_min,
+      holders_top10_ratio_max,
       pageNO,
-      pageSize: 100,
+      pageSize,
       category: "pump_in_new"
     }
   }).then((s) => s.data.data)
@@ -41,13 +47,13 @@ const getData = (pageNO = 1) => {
 const getOutData = (pageNO = 1) => {
   return _axios.get("/v1api/v4/tokens/treasure/list", {
     params: {
-      created_at_min: new Date(Date.now() - 48*60*60*1000).getTime() / 1000,
-      marketcap_max: 20000,
-      tx_24h_count_min: 100,
-      volume_u_24h_min: 20000,
-      holders_top10_ratio_max: 50,
+      created_at_min: new Date(Date.now() - timeRange).getTime() / 1000,
+      marketcap_max,
+      tx_24h_count_min,
+      volume_u_24h_min,
+      holders_top10_ratio_max,
       pageNO,
-      pageSize: 100,
+      pageSize,
       category: "pump_out_new"
     }
   }).then((s) => s.data.data)
@@ -156,8 +162,10 @@ const sendMessageToChannel = (text, msg) => {
 // 清理map
 const clearStorage = () => {
   sendedToken.forEach((value, key) => {
-    if (Math.floor((Date.now() - new Date(typeof value === "string" ? value : value.created_at)) / 1000) > 86400) {
+    if (Math.floor((Date.now() - new Date(typeof value === "string" ? value : value.created_at)) / 1000) > timeRange) {
       sendedToken.delete(key)
+      const mapObj = Object.fromEntries(sendedToken);
+      fs.writeFileSync(filePath, JSON.stringify(mapObj, null, 2), 'utf-8');
     }
   })
 }
