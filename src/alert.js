@@ -78,7 +78,7 @@ axios.post(`https://api.telegram.org/bot${API_TOKEN}/sendMessage`, {
 const priceAlert = async () => {
   var tokenArray = Object.entries(Object.fromEntries(sendedToken))
   for (let [token, info] of tokenArray) {
-    if (info.alerted) return;
+    if (info.alerted) continue;
     await getTokenNew(token)
   }
 }
