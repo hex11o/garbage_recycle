@@ -27,6 +27,9 @@ const getTokenNew = async (token) => {
     beforeInfo.alerted = true;
     sendedToken.set(token, beforeInfo);
     await sleep(1000);
+  } else if (priceChangeRatio < 0) {
+    beforeInfo.current_price_usd = current_price_usd;
+    sendedToken.set(token, beforeInfo);
   }
   await sleep(100);
 }
