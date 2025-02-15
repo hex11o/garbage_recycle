@@ -210,6 +210,7 @@ export const run = () => {
 
 // 每天清理缓存
 export const clearData = () => {
+  clearStorage()
   setInterval(() => {
     clearStorage()
   }, 24*60*60*1000)
