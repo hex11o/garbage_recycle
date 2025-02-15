@@ -63,6 +63,7 @@ function filter({ appendix, total }) {
     && !social.website.includes("x.com")
     && !social.website.includes("wikipedia.org")
     && !social.website.includes("instagram.com")
+    && !social.website.includes("facebook.com")
     && !social.website.includes("reddit.com")
     && !social.website.includes("tiktok.com")
     && !social.website.includes("linktr.ee")

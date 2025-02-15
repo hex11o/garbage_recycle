@@ -49,6 +49,7 @@ const sendAlertMessage = (beforeInfo, { symbol , current_price_usd }, priceChang
   }
 
   const text = `⚠️⚠️垃圾异动 ***${priceChangeRatio}%***⚠️⚠️
+\`${target_token}\`
 ├ 代币：[${symbol}](https://gmgn.ai/sol/token/${target_token})  
 ├ 开盘时间：${timeText}
 └ 当前价格：${current_price_usd.toFixed(9)}
