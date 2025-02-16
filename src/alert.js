@@ -20,7 +20,7 @@ const getTokenNew = async (token) => {
   const { current_price_usd: beforePrice } = beforeInfo
   const currentInfo = await getTokenCurrentInfo(token)
   const { current_price_usd } = currentInfo
-  let priceChangeRatio = ((current_price_usd  / beforePrice) * 100).toFixed(0) - 100
+  let priceChangeRatio = ((current_price_usd / beforePrice) * 100).toFixed(0) - 100
   // 变化比例超过阈值发送信息
   if (priceChangeRatio > threshold) {
     sendAlertMessage(beforeInfo, currentInfo, priceChangeRatio)
@@ -34,7 +34,7 @@ const getTokenNew = async (token) => {
   await sleep(100);
 }
 
-const sendAlertMessage = (beforeInfo, { symbol , current_price_usd }, priceChangeRatio) => {
+const sendAlertMessage = async (beforeInfo, { symbol, current_price_usd }, priceChangeRatio) => {
   let {
     target_token,
     created_at,
@@ -60,22 +60,25 @@ const sendAlertMessage = (beforeInfo, { symbol , current_price_usd }, priceChang
 [https://gmgn.ai/sol/token/${target_token}](https://gmgn.ai/sol/token/${target_token})
 `
 
-axios.post(`https://api.telegram.org/bot${API_TOKEN}/sendMessage`, {
-  chat_id: ALERT_CHAT_ID,
-  text,
-  parse_mode: "Markdown",
-  link_preview_options: {
-    is_disabled: true
-  },
-  reply_markup: {
-    inline_keyboard: [
-      [{ text: "🐶立即购买", url: `tg://resolve?domain=Tars_Dogeebot&start=rt_17336587515857_${target_token}` }],
-    ]
+  for (let id of ALERT_CHAT_ID.split(",")) {
+    axios.post(`https://api.telegram.org/bot${API_TOKEN}/sendMessage`, {
+      chat_id: id,
+      text,
+      parse_mode: "Markdown",
+      link_preview_options: {
+        is_disabled: true
+      },
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "🐶立即购买", url: `tg://resolve?domain=Tars_Dogeebot&start=rt_17336587515857_${target_token}` }],
+        ]
+      }
+    })
+      .catch((err) => {
+        console.error('Error sending message', err);
+      });
+    await sleep(1000)
   }
-})
-  .catch((err) => {
-    console.error('Error sending message', err);
-  });
 }
 
 const priceAlert = async () => {
@@ -89,7 +92,7 @@ const priceAlert = async () => {
 const priceMonitor = () => {
   setInterval(() => {
     priceAlert()
-  }, 30*1000)
+  }, 30 * 1000)
 }
 
 export default priceMonitor
