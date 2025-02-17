@@ -23,7 +23,6 @@ const getTokenNew = async (token) => {
   let priceChangeRatio = ((current_price_usd / beforePrice) * 100).toFixed(0) - 100
   // 变化比例超过阈值发送信息
   if (priceChangeRatio > threshold) {
-    sendAlertMessage(beforeInfo, currentInfo, priceChangeRatio)
     if (priceChangeRatio > 100) {
       if (beforeInfo.alerted_100) return;
       beforeInfo.alerted_100 = true
@@ -37,7 +36,7 @@ const getTokenNew = async (token) => {
       if (beforeInfo.alerted) return;
       beforeInfo.alerted = true
     }
-
+    sendAlertMessage(beforeInfo, currentInfo, priceChangeRatio)
     sendedToken.set(token, beforeInfo);
     await sleep(1000);
   } else if (priceChangeRatio < 0) {
