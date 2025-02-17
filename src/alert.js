@@ -2,9 +2,11 @@ import _axios from "../api/index.js";
 import axios from "axios";
 import { sendedToken } from "./info.js";
 import { sleep } from "../helper.js";
+import fs from "fs";
 
 const API_TOKEN = process.env.API_TOKEN;
 const ALERT_CHAT_ID = process.env.ALERT_CHAT_ID;
+const filePath = './cache.json';
 const threshold = 10
 
 // 发送消息： 当前价格变化比例超过10%
@@ -17,12 +19,33 @@ const getTokenCurrentInfo = (token) => {
 const getTokenNew = async (token) => {
   const beforeInfo = sendedToken.get(token);
   if (typeof beforeInfo === "string") return;
-  const { current_price_usd: beforePrice } = beforeInfo
+  const { max_price, min_price } = beforeInfo
   const currentInfo = await getTokenCurrentInfo(token)
-  const { current_price_usd } = currentInfo
-  let priceChangeRatio = ((current_price_usd / beforePrice) * 100).toFixed(0) - 100
+  const { current_price_usd, symbol } = currentInfo
+  let priceChangeRatio = ((current_price_usd / min_price) * 100).toFixed(0) - 100
+  // 更新当前价格与代币符号
+  beforeInfo.current_price_usd = current_price_usd;
+  beforeInfo.symbol = symbol;
+
+  // 更新最大最小价格与时间
+  const timestamp = Date.now()
+  if (!max_price) {
+    beforeInfo.max_price = current_price_usd;
+    beforeInfo.min_price = current_price_usd;
+  } else if (max_price < current_price_usd) {
+    beforeInfo.max_price = current_price_usd
+    beforeInfo.max_price_at = timestamp
+  } else if (min_price > current_price_usd) {
+    beforeInfo.min_price = current_price_usd
+    beforeInfo.min_price_at = timestamp
+  }
   // 变化比例超过阈值发送信息
   if (priceChangeRatio > threshold) {
+    if (!beforeInfo.alerted) {
+      // 记录首次报警时价格
+      beforeInfo.alert_10_price = current_price_usd
+      beforeInfo.alert_10_at = timestamp
+    }
     if (priceChangeRatio > 100) {
       if (beforeInfo.alerted_100) return;
       beforeInfo.alerted_100 = true
@@ -36,18 +59,19 @@ const getTokenNew = async (token) => {
       if (beforeInfo.alerted) return;
       beforeInfo.alerted = true
     }
-    sendAlertMessage(beforeInfo, currentInfo, priceChangeRatio)
-    sendedToken.set(token, beforeInfo);
+    sendAlertMessage(beforeInfo, priceChangeRatio)
     await sleep(1000);
-  } else if (priceChangeRatio < 0) {
-    beforeInfo.current_price_usd = current_price_usd;
-    sendedToken.set(token, beforeInfo);
   }
+  sendedToken.set(token, beforeInfo);
+  const mapObj = Object.fromEntries(sendedToken);
+  fs.writeFileSync(filePath, JSON.stringify(mapObj, null, 2), 'utf-8');
   await sleep(100);
 }
 
-const sendAlertMessage = async (beforeInfo, { symbol, current_price_usd }, priceChangeRatio) => {
+const sendAlertMessage = async (beforeInfo, priceChangeRatio) => {
   let {
+    symbol,
+    current_price_usd,
     target_token,
     created_at,
   } = beforeInfo
