@@ -25,13 +25,16 @@ const getTokenNew = async (token) => {
   if (priceChangeRatio > threshold) {
     sendAlertMessage(beforeInfo, currentInfo, priceChangeRatio)
     if (priceChangeRatio > 100) {
+      if (beforeInfo.alerted_100) return;
       beforeInfo.alerted_100 = true
       beforeInfo.alerted_50 = true
       beforeInfo.alerted = true
     } else if (priceChangeRatio > 50) {
+      if (beforeInfo.alerted_50) return;
       beforeInfo.alerted_50 = true
       beforeInfo.alerted = true
     } else {
+      if (beforeInfo.alerted) return;
       beforeInfo.alerted = true
     }
 
