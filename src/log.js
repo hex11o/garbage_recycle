@@ -60,7 +60,7 @@ function normalizeToken(item) {
 
   const currentProfit = (((current_price_usd - alert_10_price) / alert_10_price) * 100).toFixed(0)
   const maxProfit = (((max_price - alert_10_price) / alert_10_price) * 100).toFixed(0)
-  return [`${currentProfit}%`, symbol, timeText, target_token, current_price_usd.toFixed(9), `${maxProfit}%`, max_price?.toFixed(9), min_price?.toFixed(9)]
+  return [`${currentProfit}%`, symbol, timeText, target_token, current_price_usd.toFixed(9), `${maxProfit}%`, max_price.toFixed(9), min_price.toFixed(9)]
 }
 
 function sendFileToTg() {
