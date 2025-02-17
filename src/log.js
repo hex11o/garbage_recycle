@@ -17,7 +17,7 @@ function getCurrentDate() {
   const month = String(today.getMonth() + 1).padStart(2, '0'); // 月份从0开始，需要加1并保证两位数
   const day = String(today.getDate()).padStart(2, '0'); // 保证日期是两位数
 
-  return `${year}-${month}-${day}`;
+  return `${year}-${month}-${day}日报`;
 }
 
 // 任务函数
@@ -79,7 +79,7 @@ fetch(`https://api.telegram.org/bot${API_TOKEN}/sendDocument`, {
 }
 
 function log() {
-  cron.schedule('0 22 * * *', () => {
+  cron.schedule('0 9 * * *', () => {
     executeTask();
   }, {
     scheduled: true,
