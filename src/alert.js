@@ -24,7 +24,17 @@ const getTokenNew = async (token) => {
   // 变化比例超过阈值发送信息
   if (priceChangeRatio > threshold) {
     sendAlertMessage(beforeInfo, currentInfo, priceChangeRatio)
-    beforeInfo.alerted = true;
+    if (priceChangeRatio > 100) {
+      beforeInfo.alerted_100 = true
+      beforeInfo.alerted_50 = true
+      beforeInfo.alerted = true
+    } else if (priceChangeRatio > 50) {
+      beforeInfo.alerted_50 = true
+      beforeInfo.alerted = true
+    } else {
+      beforeInfo.alerted = true
+    }
+
     sendedToken.set(token, beforeInfo);
     await sleep(1000);
   } else if (priceChangeRatio < 0) {
@@ -84,7 +94,7 @@ const sendAlertMessage = async (beforeInfo, { symbol, current_price_usd }, price
 const priceAlert = async () => {
   var tokenArray = Object.entries(Object.fromEntries(sendedToken))
   for (let [token, info] of tokenArray) {
-    if (info.alerted) continue;
+    if (info.alerted_100) continue; // 1x already
     await getTokenNew(token)
   }
 }
