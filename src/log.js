@@ -85,6 +85,12 @@ function log() {
     scheduled: true,
     timezone: timezone
   });
+  cron.schedule('0 21 * * *', () => {
+    executeTask();
+  }, {
+    scheduled: true,
+    timezone: timezone
+  });
 }
 
 export default log
