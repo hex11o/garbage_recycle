@@ -4,6 +4,9 @@ import XLSX from "xlsx"
 import fetch from "node-fetch";
 import FormData from "form-data";
 import fs from "fs";
+import { config } from "dotenv";
+
+config();
 
 const timezone = 'Asia/Shanghai';
 const API_TOKEN = process.env.API_TOKEN;
@@ -14,14 +17,14 @@ function getCurrentDate() {
   const today = new Date();
 
   const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0'); // 月份从0开始，需要加1并保证两位数
-  const day = String(today.getDate()).padStart(2, '0'); // 保证日期是两位数
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
 
-  return `${year}-${month}-${day}日报`;
+  return `${year}-${month}-${day}`;
 }
 
 // 任务函数
-function executeTask() {
+export function executeTask() {
   if (fs.existsSync(filePath)) {
     const fileData = fs.readFileSync(filePath, 'utf-8');
     if (fileData) {
@@ -39,7 +42,7 @@ function executeTask() {
       ]
       const ws = XLSX.utils.aoa_to_sheet(ws_data);
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-      XLSX.writeFile(wb, `./${getCurrentDate()}.xlsx`);
+      XLSX.writeFile(wb, `${getCurrentDate()}.xlsx`);
       sendFileToTg()
     }
   }
