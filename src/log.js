@@ -37,7 +37,7 @@ export function executeTask() {
       // 输入日志
       const wb = XLSX.utils.book_new();
       const ws_data = [
-        ["当前损益", "名称", "时间", "CA", "当前价格", "最大涨幅", "最大价格", "最低价格"],
+        ["最大涨幅", "名称", "时间", "CA", "当前价格", "当前损益", "最大价格", "最低价格", "首次报警价格"],
         ...profitOrderData
       ]
       const ws = XLSX.utils.aoa_to_sheet(ws_data);
@@ -63,7 +63,7 @@ function normalizeToken(item) {
 
   const currentProfit = (((current_price_usd - alert_10_price) / alert_10_price) * 100).toFixed(0)
   const maxProfit = (((max_price - alert_10_price) / alert_10_price) * 100).toFixed(0)
-  return [`${currentProfit}%`, symbol, timeText, target_token, current_price_usd.toFixed(9), `${maxProfit}%`, max_price.toFixed(9), min_price.toFixed(9)]
+  return [maxProfit, symbol, timeText, target_token, current_price_usd.toFixed(9), `${currentProfit}%`, max_price.toFixed(9), min_price.toFixed(9), alert_10_price.toFixed(9)]
 }
 
 function sendFileToTg() {
