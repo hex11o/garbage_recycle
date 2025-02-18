@@ -46,7 +46,37 @@ const getTokenNew = async (token) => {
       beforeInfo.alert_10_price = current_price_usd
       beforeInfo.alert_10_at = timestamp
     }
-    if (priceChangeRatio > 100) {
+    if (priceChangeRatio > 10000) {
+      if (beforeInfo.alerted_10000) return;
+      beforeInfo.alerted_10000 = true
+      beforeInfo.alerted_5000 = true
+      beforeInfo.alerted_1000 = true
+      beforeInfo.alerted_500 = true
+      beforeInfo.alerted_100 = true
+      beforeInfo.alerted_50 = true
+      beforeInfo.alerted = true
+    } else if (priceChangeRatio > 5000) {
+      if (beforeInfo.alerted_5000) return;
+      beforeInfo.alerted_5000 = true
+      beforeInfo.alerted_1000 = true
+      beforeInfo.alerted_500 = true
+      beforeInfo.alerted_100 = true
+      beforeInfo.alerted_50 = true
+      beforeInfo.alerted = true
+    } else if (priceChangeRatio > 1000) {
+      if (beforeInfo.alerted_1000) return;
+      beforeInfo.alerted_1000 = true
+      beforeInfo.alerted_500 = true
+      beforeInfo.alerted_100 = true
+      beforeInfo.alerted_50 = true
+      beforeInfo.alerted = true
+    } else if (priceChangeRatio > 500) {
+      if (beforeInfo.alerted_500) return;
+      beforeInfo.alerted_500 = true
+      beforeInfo.alerted_100 = true
+      beforeInfo.alerted_50 = true
+      beforeInfo.alerted = true
+    } else if (priceChangeRatio > 100) {
       if (beforeInfo.alerted_100) return;
       beforeInfo.alerted_100 = true
       beforeInfo.alerted_50 = true
@@ -119,8 +149,7 @@ const sendAlertMessage = async (beforeInfo, priceChangeRatio) => {
 
 const priceAlert = async () => {
   var tokenArray = Object.entries(Object.fromEntries(sendedToken))
-  for (let [token, info] of tokenArray) {
-    if (info.alerted_100) continue; // 1x already
+  for (let [token] of tokenArray) {
     await getTokenNew(token)
   }
 }
