@@ -193,8 +193,8 @@ const start = async () => {
     }
   }
   const newToken = allData.filter(({ target_token }) => !sendedToken.has(target_token))
-  if (!newToken.length) return;
   console.log(new Date(), newToken.length);
+  if (!newToken.length) return;
   for (let token of newToken) {
     const { target_token } = token;
     if (sendedToken.has(target_token)) return; // buggy, 前面请求回来的可能重复，在这里过滤
