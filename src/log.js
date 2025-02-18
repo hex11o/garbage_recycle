@@ -10,7 +10,7 @@ config();
 
 const timezone = 'Asia/Shanghai';
 const API_TOKEN = process.env.API_TOKEN;
-const CHAT_ID = process.env.CHAT_ID;
+const ALERT_CHAT_ID = process.env.ALERT_CHAT_ID;
 const filePath = './cache.json'
 
 function getCurrentDate() {
@@ -70,7 +70,7 @@ function sendFileToTg() {
   // 创建一个表单数据对象
 const form = new FormData();
 // 将文件添加到表单数据中
-form.append('chat_id', CHAT_ID);
+form.append('chat_id', ALERT_CHAT_ID);
 form.append('document', fs.createReadStream(`./${getCurrentDate()}.xlsx`)); // 发送的文件
 
 fetch(`https://api.telegram.org/bot${API_TOKEN}/sendDocument`, {
